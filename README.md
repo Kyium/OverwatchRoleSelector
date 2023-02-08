@@ -25,3 +25,6 @@ or use the numbers 1 to 5 to select them respectivly.
 <br />
 Once you have both the players and rolls selected, press the roll button and the players will be assigned randomly<br />
 to their roles at the bottom of the window. Any errors in this proccess will be displayed at the bottom in the grey.
+
+<ins>**How to Run:<br />**</ins>
+This program requires at least python 3.0 to run. Simply double click the 'RoleSelector.py' file with python installed to launch.
