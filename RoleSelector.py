@@ -2,7 +2,6 @@ from tkinter import Tk, Listbox, Label, StringVar, Button, Frame, Checkbutton, I
 from json import loads
 from random import sample
 from datetime import datetime
-from functools import partial
 
 PLAYER_FILE_PATH = "./players.txt"
 LOCALE_FILE_PATH = "./locales/en-gb.csv"
