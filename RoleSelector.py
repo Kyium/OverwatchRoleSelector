@@ -1,4 +1,4 @@
-from tkinter import Tk, Listbox, Label, StringVar, Button, Frame, Checkbutton, IntVar, LEFT, Scrollbar
+from tkinter import Tk, Listbox, Label, StringVar, Button, Frame, Checkbutton, IntVar, LEFT
 from json import loads
 from random import sample
 from datetime import datetime
@@ -90,7 +90,7 @@ class Window:
         self.output_text_var = StringVar(self.root)
         self.last_roll_text_var = StringVar(self.root)
         self.last_roll_text_var.set(f"{self.loc.g('last_roll')} -")
-        self.output_text_var.set(f"{self.loc.g('Tank')}: -\n{self.loc.g('DPS')}: -\n{self.loc.g('Tank')}: -\n"
+        self.output_text_var.set(f"{self.loc.g('Tank')}: -\n{self.loc.g('DPS')}: -\n{self.loc.g('DPS')}: -\n"
                                  f"{self.loc.g('Support')}: -\n{self.loc.g('Support')}: -")
 
         self.roles_selected = {"Tank": IntVar(self.root),
@@ -108,9 +108,11 @@ class Window:
         self.root.bind("4", lambda _: toggle_bool_int_var(self.roles_selected["Support_1"]))
         self.root.bind("5", lambda _: toggle_bool_int_var(self.roles_selected["Support_2"]))
         self.root.bind("<Right>", lambda _: self.add_player_to_selected())
+        self.root.bind("d", lambda _: self.add_player_to_selected())
         self.root.bind("<Control_L>", lambda _: self.toggle_selected_listbox())
         self.root.bind("<Control_R>", lambda _: self.toggle_selected_listbox())
         self.root.bind("<Left>", lambda _: self.removed_player_from_selected())
+        self.root.bind("a", lambda _: self.removed_player_from_selected())
         self.root.bind("<space>", lambda _: self.roll())
         self.root.bind("<Return>", lambda _: self.roll())
         self.root.bind("<Escape>", lambda _: exit(0))
@@ -222,16 +224,16 @@ class Window:
                 output_string += f"{self.loc.g('Tank')}: -\n"
 
             if self.roles_selected["DPS_1"].get():
-                output_string += f"{self.loc.g('Tank')}: {result[index]}\n"
+                output_string += f"{self.loc.g('DPS')}: {result[index]}\n"
                 index += 1
             else:
-                output_string += f"{self.loc.g('Tank')}: -\n"
+                output_string += f"{self.loc.g('DPS')}: -\n"
 
             if self.roles_selected["DPS_2"].get():
-                output_string += f"{self.loc.g('Tank')}: {result[index]}\n"
+                output_string += f"{self.loc.g('DPS')}: {result[index]}\n"
                 index += 1
             else:
-                output_string += f"{self.loc.g('Tank')}: -\n"
+                output_string += f"{self.loc.g('DPS')}: -\n"
 
             if self.roles_selected["Support_1"].get():
                 output_string += f"{self.loc.g('Support')}: {result[index]}\n"
