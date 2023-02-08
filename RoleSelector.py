@@ -5,7 +5,6 @@ from datetime import datetime
 
 PLAYER_FILE_PATH = "./players.txt"
 LOCALE_FILE_PATH = "./locales/en-gb.csv"
-WINDOW_SIZE = "390x300"
 
 
 class ListVar(StringVar):
@@ -81,7 +80,6 @@ class Window:
         self.player_file_path = player_file_path
         self.loc = locale
         self.root.title(self.loc.g('Title'))
-        self.root.geometry(WINDOW_SIZE)
         self.root.config(pady=5)
         self.root.resizable(False, False)
 
@@ -91,7 +89,7 @@ class Window:
         self.selected_list_box = Listbox(self.root, width=20, height=10, listvariable=self.selected_list_var)
         self.output_text_var = StringVar(self.root)
         self.last_roll_text_var = StringVar(self.root)
-        self.last_roll_text_var.set(f"{self.loc.g('last_roll')}: -")
+        self.last_roll_text_var.set(f"{self.loc.g('last_roll')} -")
         self.output_text_var.set(f"{self.loc.g('Tank')}: -\n{self.loc.g('DPS')}: -\n{self.loc.g('Tank')}: -\n"
                                  f"{self.loc.g('Support')}: -\n{self.loc.g('Support')}: -")
 
@@ -116,6 +114,10 @@ class Window:
         self.root.bind("<space>", lambda _: self.roll())
         self.root.bind("<Return>", lambda _: self.roll())
         self.root.bind("<Escape>", lambda _: exit(0))
+
+        self.root.update()
+        total = self.root.grid_bbox()
+        print(total)
 
     def load_players(self) -> list:
         players = []
@@ -245,7 +247,7 @@ class Window:
 
             self.error_text_var.set("")
             if index > 0:
-                self.last_roll_text_var.set(f"{self.loc.g('last_roll')}: "
+                self.last_roll_text_var.set(f"{self.loc.g('last_roll')} "
                                             f"{datetime.today().time().strftime('%H:%M:%S')}")
             else:
                 self.error_text_var.set(self.loc.g('role_count_error'))
