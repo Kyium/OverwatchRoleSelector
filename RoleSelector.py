@@ -115,10 +115,6 @@ class Window:
         self.root.bind("<Return>", lambda _: self.roll())
         self.root.bind("<Escape>", lambda _: exit(0))
 
-        self.root.update()
-        total = self.root.grid_bbox()
-        print(total)
-
     def load_players(self) -> list:
         players = []
         try:
@@ -182,6 +178,10 @@ class Window:
         support_1_checkbutton.grid(column=0, row=3, sticky="w", padx=5)
         support_2_checkbutton.grid(column=0, row=4, sticky="w", padx=5)
         error_label.grid(column=0, row=3, columnspan=5, sticky="we")
+
+        self.root.update()
+        dimensions = self.root.grid_bbox()
+        self.root.geometry(f"{dimensions[2]}x{dimensions[3]}")
 
     def add_player_to_selected(self):
         selected = self.available_list_box.curselection()
