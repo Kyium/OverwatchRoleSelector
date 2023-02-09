@@ -6,8 +6,8 @@ A way to randomly assign a group of players overwatch roles.
 
 <ins>**keybindings:<br />**</ins>
 **Up/Down arrow keys:** Navigate up and down in the currently selected list.<br />
-**Right:** Move The player currently selected in the 'available' list to the 'selected' list.<br />
-**Left:** Move The player currently selected in the 'selected' list to the 'available' list.<br />
+**Right/D:** Move The player currently selected in the 'available' list to the 'selected' list.<br />
+**Left/A:** Move The player currently selected in the 'selected' list to the 'available' list.<br />
 **Ctrl:** Swap currently focused list.<br />
 **1,2,3,4,5:** Toggle the roles that players can be assigned to.<br />
 **Space/Return:** Roll the selector.<br />
@@ -27,4 +27,6 @@ Once you have both the players and rolls selected, press the roll button and the
 to their roles at the bottom of the window. Any errors in this process will be displayed at the bottom in the grey.
 
 <ins>**How to Run:<br />**</ins>
-This program requires at least python 3.0 to run. Simply double click the 'RoleSelector.py' file with python installed to launch.
+This program requires at least python 3.7 to run. Simply double click the 'RoleSelector.py' file with python 
+installed to launch.<br />
+May not function correctly on versions of python with older tcl-tk versions on mac and linux
