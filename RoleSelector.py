@@ -21,19 +21,18 @@ class Window:
         self.root.resizable(False, False)
 
         self.widgets = {}
-        self.int_vars = {}
         self.string_vars = {}
         self.list_vars = {}
-        self.roles_selected = {"Tank": IntVar(self.root),
-                               "DPS_1": IntVar(self.root), "DPS_2": IntVar(self.root),
-                               "Support_1": IntVar(self.root), "Support_2": IntVar(self.root)}
+        self.int_vars = {"Tank": IntVar(self.root),
+                         "DPS_1": IntVar(self.root), "DPS_2": IntVar(self.root),
+                         "Support_1": IntVar(self.root), "Support_2": IntVar(self.root)}
 
         # Keybindings
-        self.root.bind("1", lambda _: toggle_bool_int_var(self.roles_selected["Tank"]))
-        self.root.bind("2", lambda _: toggle_bool_int_var(self.roles_selected["DPS_1"]))
-        self.root.bind("3", lambda _: toggle_bool_int_var(self.roles_selected["DPS_2"]))
-        self.root.bind("4", lambda _: toggle_bool_int_var(self.roles_selected["Support_1"]))
-        self.root.bind("5", lambda _: toggle_bool_int_var(self.roles_selected["Support_2"]))
+        self.root.bind("1", lambda _: toggle_bool_int_var(self.int_vars["Tank"]))
+        self.root.bind("2", lambda _: toggle_bool_int_var(self.int_vars["DPS_1"]))
+        self.root.bind("3", lambda _: toggle_bool_int_var(self.int_vars["DPS_2"]))
+        self.root.bind("4", lambda _: toggle_bool_int_var(self.int_vars["Support_1"]))
+        self.root.bind("5", lambda _: toggle_bool_int_var(self.int_vars["Support_2"]))
         self.root.bind("<Right>", lambda _: self.add_player_to_selected())
         self.root.bind("d", lambda _: self.add_player_to_selected())
         self.root.bind("<Control_L>", lambda _: self.toggle_selected_listbox())
@@ -63,28 +62,32 @@ class Window:
             self.widgets["available_list_box"].focus()
 
     def main_window(self):
+        players = self.load_players()
+
+        # Define used variables
         self.list_vars["available"] = ListVar(self.root)
-        self.widgets["available_list_box"] = Listbox(self.root, width=20, height=10,
-                                                     listvariable=self.list_vars["available"])
         self.list_vars["selected"] = ListVar(self.root)
-        self.widgets["selected_list_box"] = Listbox(self.root, width=20, height=10,
-                                                    listvariable=self.list_vars["selected"])
         self.string_vars["output"] = StringVar(self.root)
         self.string_vars["last_roll"] = StringVar(self.root)
+
+        # Assign variables values
+        self.string_vars["error"] = StringVar()
         self.string_vars["last_roll"].set(f"{self.loc.g('last_roll')} -")
         self.string_vars["output"].set(f"{self.loc.g('Tank')}: -\n{self.loc.g('DPS')}:"
                                        f" -\n{self.loc.g('DPS')}: -\n{self.loc.g('Support')}:"
                                        f" -\n{self.loc.g('Support')}: -")
-        self.roles_selected["DPS_1"].set(1)
-        self.roles_selected["DPS_2"].set(1)
+        self.list_vars["available"].set(players)
+        self.int_vars["DPS_1"].set(1)
+        self.int_vars["DPS_2"].set(1)
+
+        # Define all widgets and frames
+        self.widgets["available_list_box"] = Listbox(self.root, width=20, height=10,
+                                                     listvariable=self.list_vars["available"])
+        self.widgets["selected_list_box"] = Listbox(self.root, width=20, height=10,
+                                                    listvariable=self.list_vars["selected"])
         self.widgets["roll_frame"] = Frame(self.root)
         self.widgets["last_roll_label"] = Label(self.widgets["roll_frame"],
                                                 textvariable=self.string_vars["last_roll"])
-        self.string_vars["error"] = StringVar()
-
-        players = self.load_players()
-
-        self.list_vars["available"].set(players)
         self.widgets["available_label"] = Label(self.root, text=self.loc.g("available_label"))
         self.widgets["button_frame"] = Frame(self.root)
         self.widgets["add_button"] = Button(self.widgets["button_frame"], text=">>",
@@ -101,22 +104,23 @@ class Window:
         self.widgets["role_options_frame"] = Frame(self.root)
         self.widgets["roles_label"] = Label(self.root, text=self.loc.g("roles_label"))
         self.widgets["tank_checkbutton"] = Checkbutton(self.widgets["role_options_frame"], text=self.loc.g('Tank'),
-                                                       variable=self.roles_selected["Tank"], offvalue=0, onvalue=1)
+                                                       variable=self.int_vars["Tank"], offvalue=0, onvalue=1)
         self.widgets["dps_1_checkbutton"] = Checkbutton(self.widgets["role_options_frame"], text=self.loc.g('DPS'),
-                                                        variable=self.roles_selected["DPS_1"], offvalue=0, onvalue=1, )
+                                                        variable=self.int_vars["DPS_1"], offvalue=0, onvalue=1, )
         self.widgets["dps_2_checkbutton"] = Checkbutton(self.widgets["role_options_frame"], text=self.loc.g('DPS'),
-                                                        variable=self.roles_selected["DPS_2"], offvalue=0, onvalue=1)
+                                                        variable=self.int_vars["DPS_2"], offvalue=0, onvalue=1)
         self.widgets["support_1_checkbutton"] = Checkbutton(self.widgets["role_options_frame"],
                                                             text=self.loc.g('Support'),
-                                                            variable=self.roles_selected["Support_1"],
+                                                            variable=self.int_vars["Support_1"],
                                                             offvalue=0, onvalue=1)
         self.widgets["support_2_checkbutton"] = Checkbutton(self.widgets["role_options_frame"],
                                                             text=self.loc.g('Support'),
-                                                            variable=self.roles_selected["Support_2"],
+                                                            variable=self.int_vars["Support_2"],
                                                             offvalue=0, onvalue=1)
         self.widgets["error_label"] = Label(self.root, textvariable=self.string_vars["error"],
                                             fg="#AA0000", bg="#CCCCCC")
 
+        # Display all widgets and frames
         self.widgets["available_label"].grid(column=0, row=0, padx=5, sticky="w")
         self.widgets["available_list_box"].grid(column=0, row=1, padx=5)
         self.widgets["button_frame"].grid(column=1, row=1)
@@ -138,9 +142,10 @@ class Window:
         self.widgets["support_2_checkbutton"].grid(column=0, row=4, sticky="w", padx=5)
         self.widgets["error_label"].grid(column=0, row=3, columnspan=5, sticky="we")
 
+        # Resize application to fit all elements
         self.root.update()
         dimensions = self.root.grid_bbox()
-        self.root.geometry(f"{dimensions[2]}x{dimensions[3]}")
+        self.root.geometry(f"{dimensions[2]}x{dimensions[3]+5}")
 
     def add_player_to_selected(self):
         selected = self.widgets["available_list_box"].curselection()
@@ -174,31 +179,31 @@ class Window:
             output_string = ""
             result = sample(selected, roll_count)
 
-            if self.roles_selected["Tank"].get():
+            if self.int_vars["Tank"].get():
                 output_string += f"{self.loc.g('Tank')}: {result[index]}\n"
                 index += 1
             else:
                 output_string += f"{self.loc.g('Tank')}: -\n"
 
-            if self.roles_selected["DPS_1"].get():
+            if self.int_vars["DPS_1"].get():
                 output_string += f"{self.loc.g('DPS')}: {result[index]}\n"
                 index += 1
             else:
                 output_string += f"{self.loc.g('DPS')}: -\n"
 
-            if self.roles_selected["DPS_2"].get():
+            if self.int_vars["DPS_2"].get():
                 output_string += f"{self.loc.g('DPS')}: {result[index]}\n"
                 index += 1
             else:
                 output_string += f"{self.loc.g('DPS')}: -\n"
 
-            if self.roles_selected["Support_1"].get():
+            if self.int_vars["Support_1"].get():
                 output_string += f"{self.loc.g('Support')}: {result[index]}\n"
                 index += 1
             else:
                 output_string += f"{self.loc.g('Support')}: -\n"
 
-            if self.roles_selected["Support_2"].get():
+            if self.int_vars["Support_2"].get():
                 output_string += f"{self.loc.g('Support')}: {result[index]}"
                 index += 1
             else:
@@ -218,7 +223,7 @@ class Window:
 
     def get_roll_selected_count(self) -> int:
         count = 0
-        for roll in self.roles_selected.values():
+        for roll in self.int_vars.values():
             count += roll.get()
         return count
 
@@ -228,6 +233,5 @@ def toggle_bool_int_var(int_var: IntVar):
 
 
 if __name__ == '__main__':
-    tk_root = Tk()
-    main = Window(tk_root, PLAYER_FILE_PATH, Locale(LOCALE_FILE_PATH))
+    main = Window(Tk(), PLAYER_FILE_PATH, Locale(LOCALE_FILE_PATH))
     main.start()
