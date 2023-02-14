@@ -1,6 +1,8 @@
 from tkinter import Tk, Listbox, Label, StringVar, Button, Frame, Checkbutton, IntVar, LEFT
 from random import sample
 from datetime import datetime
+from threading import Thread
+from time import sleep
 
 from scripts.locale import Locale
 from scripts.listvar import ListVar
@@ -19,6 +21,9 @@ class Window:
         self.root.title(self.loc.g('Title'))
         self.root.config(pady=5)
         self.root.resizable(False, False)
+
+        # clock thead
+        self.__clock = Thread(target=self.__clock_thread, name="Clock thread", daemon=True)
 
         self.widgets = {}
         self.string_vars = {}
@@ -55,6 +60,12 @@ class Window:
             self.string_vars["error"].set(self.loc.g("player_file_error"))
         return players
 
+    def __clock_thread(self):
+        while 1:
+            self.string_vars["current_time"].set(f"{self.loc.g('current_time')} "
+                                                 f"{datetime.today().time().strftime('%H:%M:%S')}")
+            sleep(1)
+
     def toggle_selected_listbox(self):
         if self.root.focus_get() is self.widgets["available_list_box"]:
             self.widgets["selected_list_box"].focus()
@@ -69,9 +80,11 @@ class Window:
         self.list_vars["selected"] = ListVar(self.root)
         self.string_vars["output"] = StringVar(self.root)
         self.string_vars["last_roll"] = StringVar(self.root)
+        self.string_vars["current_time"] = StringVar(self.root)
+        self.string_vars["error"] = StringVar(self.root)
 
         # Assign variables values
-        self.string_vars["error"] = StringVar()
+        self.string_vars["current_time"].set(f"{self.loc.g('current_time')} -")
         self.string_vars["last_roll"].set(f"{self.loc.g('last_roll')} -")
         self.string_vars["output"].set(f"{self.loc.g('Tank')}: -\n{self.loc.g('DPS')}:"
                                        f" -\n{self.loc.g('DPS')}: -\n{self.loc.g('Support')}:"
@@ -88,6 +101,8 @@ class Window:
         self.widgets["roll_frame"] = Frame(self.root)
         self.widgets["last_roll_label"] = Label(self.widgets["roll_frame"],
                                                 textvariable=self.string_vars["last_roll"])
+        self.widgets["current_time_label"] = Label(self.widgets["roll_frame"],
+                                                   textvariable=self.string_vars["current_time"])
         self.widgets["available_label"] = Label(self.root, text=self.loc.g("available_label"))
         self.widgets["button_frame"] = Frame(self.root)
         self.widgets["add_button"] = Button(self.widgets["button_frame"], text=">>",
@@ -132,6 +147,7 @@ class Window:
         self.widgets["roll_frame"].grid(column=0, row=2, pady=5, padx=5)
         self.widgets["roll_button"].grid(column=0, row=0, sticky="sn")
         self.widgets["last_roll_label"].grid(column=0, row=1)
+        self.widgets["current_time_label"].grid(column=0, row=2)
         self.widgets["next_roles_label"].grid(column=0, row=0, sticky="w")
         self.widgets["role_options_frame"].grid(column=3, row=1)
         self.widgets["roles_label"].grid(column=3, row=0, sticky="w")
@@ -169,6 +185,7 @@ class Window:
 
     def start(self):
         self.main_window()
+        self.__clock.start()
         self.root.mainloop()
 
     def roll(self):
@@ -213,6 +230,8 @@ class Window:
             if index > 0:
                 self.string_vars["last_roll"].set(f"{self.loc.g('last_roll')} "
                                                   f"{datetime.today().time().strftime('%H:%M:%S')}")
+                self.string_vars["current_time"].set(f"{self.loc.g('current_time')} "
+                                                     f"{datetime.today().time().strftime('%H:%M:%S')}")
             else:
                 self.string_vars["error"].set(self.loc.g('role_count_error'))
             self.string_vars["output"].set(output_string)
