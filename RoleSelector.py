@@ -238,7 +238,9 @@ class Window:
 
         else:
             required_count = roll_count - len(selected)
-            self.string_vars["error"].set(f"{self.loc.g('player_count_error')}" % required_count)
+            error_str = f"{self.loc.g('player_count_error')}"
+            error_str.replace("%s", str(required_count))
+            self.string_vars["error"].set(error_str)
 
     def get_roll_selected_count(self) -> int:
         count = 0
