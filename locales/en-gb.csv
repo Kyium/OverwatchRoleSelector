@@ -4,7 +4,7 @@ Tank,Tank
 DPS,DPS
 Support,Support
 
-player_file_error,Could not load players file.
+player_file_error,Could not load players file: '%s'.
 role_count_error,Select at least 1 role.
 player_count_error,Select at least %s more player(s)
 
@@ -15,3 +15,5 @@ roles_label,Roles:
 roll_button,Roll
 last_roll,Last:
 current_time,Current:
+current_roll,Current:
+previous_roll,Previous:
