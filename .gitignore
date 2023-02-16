@@ -1,4 +1,6 @@
 .idea/
+
+#player_files
 ./player_files/*.plr
 !./player_files/default.plr
 
