@@ -1,4 +1,4 @@
-from tkinter import Tk, Listbox, Label, StringVar, Button, Frame, Checkbutton, IntVar, LEFT, Widget, Menu, Toplevel
+from tkinter import Tk, Listbox, Label, StringVar, Button, Frame, Checkbutton, IntVar, LEFT, Widget, Menu
 from os import listdir
 from random import sample
 from datetime import datetime
