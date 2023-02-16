@@ -1,6 +1,6 @@
 .idea/
-./player_files/*
-!./player_files/default.txt
+./player_files/*.plr
+!./player_files/default.plr
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
