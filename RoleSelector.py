@@ -5,15 +5,19 @@ from datetime import datetime
 from threading import Thread
 from time import sleep
 from typing import Dict
-from json import load as json_load, dumps as json_dump_str, JSONDecodeError
+from json import dumps as json_dump_str
 
 from scripts.locale import Locale
 from scripts.listvar import ListVar
 from scripts.OptionMenu import OptionMenu
+from scripts.config import Config
+from scripts.player_file.CreateDeafaultPlayerFile import create_default_player_file
 
 PLAYER_FILE_DIR = "./player_files/"
 LOCALE_FILE_PATH = "./locales/en-gb.csv"
 CONFIG_FILE_PATH = "./config.json"
+
+DEFAULT_CONFIG = {"selected_player_file": "default.plr"}
 
 
 class Window:
@@ -24,11 +28,7 @@ class Window:
         self.loc = locale
 
         # config
-        try:
-            self.config = json_load(open(config_file_path, encoding="UTF-8"))
-        except JSONDecodeError:
-            self.create_config_file()
-            self.config = json_load(open(config_file_path, encoding="UTF-8"))
+        self.config = Config(CONFIG_FILE_PATH, DEFAULT_CONFIG)
 
         # Window config
         self.root.title(self.loc.g('Title'))
@@ -47,6 +47,10 @@ class Window:
         self.right_padding = 12
         self._available_player_files = []
         self.load_available_player_files()
+        if len(self._available_player_files) == 0:
+            create_default_player_file()
+        if self.config.get("selected_player_file") not in self._available_player_files:
+            self.config.set("selected_player_file", self._available_player_files[0])
 
         # Keybindings
         self.root.bind("1", lambda _: toggle_bool_int_var(self.int_vars["Tank"]))
@@ -104,7 +108,7 @@ class Window:
         pass
 
     def main_window(self):
-        players = self.load_players(self.config["selected_player_file"])
+        players = self.load_players(self.config.get("selected_player_file"))
 
         # Define used variables
         self.list_vars["available"] = ListVar(self.root)
@@ -135,7 +139,8 @@ class Window:
         self.widgets["file_menu"].add_command(label="Add player file", command=self.add_player_file_window)
         self.widgets["file_menu"].add_command(label="Remove player file", command=self.remove_player_file_window)
         self.widgets["select_player_file_menu"] = OptionMenu(self.widgets["file_menu"], self._available_player_files,
-                                                             "default.plr", self.string_vars["selected_player_file"],
+                                                             self.config.get("selected_player_file"),
+                                                             self.string_vars["selected_player_file"],
                                                              "Select player file",
                                                              callback=self.change_selected_player_file)
 
@@ -222,15 +227,9 @@ class Window:
         dimensions = self.root.grid_bbox()
         self.root.geometry(f"{dimensions[2]}x{dimensions[3]+5}")
 
-    def create_config_file(self):
-        config = {"selected_player_file": "default.plr"}
-        config_data = json_dump_str(config)
-        with open(self.config_file_path, "w") as f:
-            f.write(config_data)
-
     def change_selected_player_file(self):
-        self.config["selected_player_file"] = self.string_vars["selected_player_file"].get()
-        self.list_vars["available"].set(self.load_players(self.config["selected_player_file"]))
+        self.config.set("selected_player_file", self.string_vars["selected_player_file"].get())
+        self.list_vars["available"].set(self.load_players(self.config.get("selected_player_file")))
         self.list_vars["selected"].set([])
         config_data = json_dump_str(self.config)
         with open(self.config_file_path, "w") as f:
